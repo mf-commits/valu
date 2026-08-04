@@ -1,0 +1,18 @@
+[build]
+  command = "npm run build"
+  publish = ".next"
+
+[build.environment]
+  NODE_VERSION = "20"
+
+# Netlify détecte Next.js automatiquement et installe/configure lui-même
+# @netlify/plugin-nextjs (Next.js Runtime v5). Le déclarer manuellement ici
+# sans l'avoir aussi en devDependency dans package.json est la cause la plus
+# fréquente de l'erreur "Deploy failed due to an error in @netlify/plugin-nextjs
+# plugin" — Netlify tente de charger un plugin qu'il ne trouve pas encore
+# installé. Si tu veux le forcer explicitement plutôt que compter sur la
+# détection automatique, ajoute d'abord la dépendance :
+#   npm install -D @netlify/plugin-nextjs
+# puis décommente :
+# [[plugins]]
+#   package = "@netlify/plugin-nextjs"
