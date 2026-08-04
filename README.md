@@ -29,11 +29,13 @@ app/
   page.tsx                    → tableau de bord (liste des contrats) — protégé
   login/page.tsx                → écran de mot de passe
   nouveau/page.tsx               → formulaire de création (services + lignes) — protégé
+  parametres/page.tsx             → nom/adresse d'entreprise, vidéo, mot de bienvenue — protégé
   contrat/[id]/page.tsx           → page publique : bienvenue + lecture + signature
   api/contracts/route.ts           → POST : crée un contrat — protégé
   api/contracts/[id]/pdf/route.ts   → GET : télécharge le PDF signé
   api/sign/route.ts                  → POST : valide initiales + signature, génère le PDF
   api/auth/route.ts                   → POST : vérifie le mot de passe
+  api/settings/route.ts                → GET/POST : paramètres modifiables — protégé
 components/
   SignFlow.tsx          → bienvenue → lecture/initiales → signature → confirmation
   WelcomeLetter.tsx        → lettre ouverte + lien vidéo d'introduction
@@ -41,14 +43,34 @@ components/
   CopyLinkButton.tsx           → bouton « copier le lien »
 lib/
   contractStore.ts        → lecture/écriture des contrats (Netlify Blobs)
-  companyConfig.ts          → coordonnées de l'entreprise + lien vidéo (à remplir)
-  servicesCatalog.ts          → services proposés (catégories de lignes du contrat)
-  welcomeLetter.ts               → contenu de la lettre de bienvenue
-  contractContent.ts               → gabarit de texte du contrat (Québec)
-  pdfGenerator.ts                    → génération du PDF (pdf-lib)
-  hash.ts                              → empreinte SHA-256 pour le certificat
-middleware.ts            → protège / et /nouveau par mot de passe
+  settingsStore.ts          → paramètres modifiables (Netlify Blobs), fallback sur companyConfig
+  companyConfig.ts            → valeurs par défaut (utilisées tant que /parametres n'a rien enregistré)
+  servicesCatalog.ts            → services proposés (catégories de lignes du contrat)
+  welcomeLetter.ts                 → texte par défaut + conversion texte → blocs de la lettre de bienvenue
+  contractContent.ts                 → gabarit de texte du contrat (Québec)
+  pdfGenerator.ts                      → génération du PDF (pdf-lib)
+  hash.ts                                → empreinte SHA-256 pour le certificat
+middleware.ts            → protège /, /nouveau, /parametres par mot de passe
 ```
+
+## Paramètres modifiables sans toucher au code
+
+La page `/parametres` (bouton « Paramètres » sur le tableau de bord) permet de
+changer, sans redéploiement :
+
+- le nom et l'adresse de l'entreprise (repris dans le texte légal de chaque
+  nouveau contrat) ;
+- le lien de la vidéo d'introduction (YouTube, Vimeo, Loom) — s'affiche avec
+  un aperçu cliquable sur l'écran de bienvenue du client dès qu'il est
+  renseigné ;
+- le mot de bienvenue affiché avant la lecture du contrat et inclus en page
+  de garde du PDF signé. Sépare les paragraphes par une ligne vide ; une
+  ligne qui commence par `## ` devient un sous-titre, des lignes qui
+  commencent par `- ` deviennent une liste à puces.
+
+Ces valeurs sont stockées dans Netlify Blobs (comme les contrats) — tant que
+rien n'a été enregistré via `/parametres`, les valeurs par défaut de
+`lib/companyConfig.ts` et `lib/welcomeLetter.ts` sont utilisées.
 
 ## Personnalisation par service et lignes du contrat
 
@@ -59,6 +81,14 @@ description) à la section « Portée des services » du contrat, que tu peux
 personnalisée » permet d'ajouter des lignes qui ne sont pas dans le
 catalogue. Modifie `lib/servicesCatalog.ts` pour ajuster tes services et
 leurs descriptions par défaut.
+
+## Facturation unique ou récurrente mensuelle
+
+Sur `/nouveau`, choisis « Paiement unique » ou « Récurrent mensuel ». En mode
+mensuel, le montant calculé à partir des lignes est présenté comme un
+montant *mensuel* (pas de total annuel affiché ou mentionné dans le
+contrat), avec une durée d'engagement optionnelle (en mois). Le texte légal
+du contrat (article 3) s'ajuste automatiquement selon le mode choisi.
 
 ## Autorisation par initiales
 

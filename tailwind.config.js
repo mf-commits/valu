@@ -29,8 +29,8 @@ module.exports = {
           "Arial",
           "sans-serif",
         ],
-        // Gamborino pour les titres — appliqué via la classe font-title.
-        title: ["Gamborino", "Switzer", "serif"],
+        // Gambarino pour les titres — appliqué via la classe font-title.
+        title: ["Gambarino", "Switzer", "serif"],
       },
       boxShadow: {
         soft: "0 10px 40px -10px rgba(0, 0, 0, 0.12)",

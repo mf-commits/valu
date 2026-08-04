@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
 export const config = {
-  matcher: ["/", "/nouveau", "/api/contracts"],
+  matcher: ["/", "/nouveau", "/parametres", "/api/contracts", "/api/settings"],
 };
 
 async function sha256Hex(input: string): Promise<string> {
@@ -27,7 +27,7 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  if (request.nextUrl.pathname === "/api/contracts") {
+  if (request.nextUrl.pathname.startsWith("/api/")) {
     return NextResponse.json({ error: "Non autorisé." }, { status: 401 });
   }
 
