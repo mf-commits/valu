@@ -4,7 +4,12 @@ import { sha256 } from "@/lib/hash";
 import { getContract, updateContract, InitialEntry } from "@/lib/contractStore";
 import { getContractText } from "@/lib/contractContent";
 import { companyConfig } from "@/lib/companyConfig";
-import { getWelcomeLetterText } from "@/lib/welcomeLetter";
+import { getSettings } from "@/lib/settingsStore";
+import {
+  getWelcomeLetterText,
+  getWelcomeLetterSignoff,
+  parseWelcomeMessage,
+} from "@/lib/welcomeLetter";
 
 const REQUIRED_INITIAL_KEYS = ["prix", "resiliation", "responsabilite"];
 
@@ -63,15 +68,23 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    const settings = await getSettings();
+
     // Le texte du contrat est reconstruit côté serveur à partir des données
     // enregistrées — jamais depuis ce que le navigateur envoie — pour éviter
     // qu'un client altère le texte signé.
     const contractText = getContractText({
       clientNom: record.clientNom,
+      clientEntreprise: record.clientEntreprise,
       lines: record.lines,
       montant: record.montant,
+      billingType: record.billingType,
+      dureeMois: record.dureeMois,
       delaisPaiement: record.delaisPaiement,
-      ...companyConfig,
+      entrepriseNom: settings.entrepriseNom,
+      entrepriseAdresse: settings.entrepriseAdresse,
+      villeJuridiction: companyConfig.villeJuridiction,
+      preavisJours: companyConfig.preavisJours,
     });
 
     const timestamp = new Date().toLocaleString("fr-CA", {
@@ -85,8 +98,13 @@ export async function POST(request: NextRequest) {
       `${contractText}|${signerName}|${timestamp}|${signatureDataUrl}`
     );
 
+    const introText = getWelcomeLetterText(
+      parseWelcomeMessage(settings.welcomeMessage),
+      getWelcomeLetterSignoff(settings.entrepriseNom)
+    );
+
     const pdfBytes = await generateContractPdf({
-      introText: getWelcomeLetterText(),
+      introText,
       contractText,
       signerName: signerName.trim(),
       signerEmail,

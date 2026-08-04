@@ -2,27 +2,18 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Dépose les fichiers de police réels dans /public/fonts/ puis ajuste les
-   chemins ci-dessous. Tant que les fichiers ne sont pas présents, le
-   navigateur retombe sur les polices de secours (voir tailwind.config.js). */
+/* Fichiers réels fournis par Services Valu — déposés dans /public/fonts/. */
 @font-face {
-  font-family: "Gamborino";
-  src: url("/fonts/Gamborino-Regular.woff2") format("woff2");
+  font-family: "Gambarino";
+  src: url("/fonts/Gambarino-Regular.otf") format("opentype");
   font-weight: 400 700;
   font-display: swap;
 }
 
 @font-face {
   font-family: "Switzer";
-  src: url("/fonts/Switzer-Regular.woff2") format("woff2");
-  font-weight: 400;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Switzer";
-  src: url("/fonts/Switzer-Medium.woff2") format("woff2");
-  font-weight: 500;
+  src: url("/fonts/Switzer-Light.otf") format("opentype");
+  font-weight: 300 500;
   font-display: swap;
 }
 

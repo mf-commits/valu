@@ -1,5 +1,5 @@
 import { getStore } from "@netlify/blobs";
-import type { ContractLine } from "@/lib/contractContent";
+import type { BillingType, ContractLine } from "@/lib/contractContent";
 
 export type ContractStatus = "pending" | "signed";
 
@@ -13,8 +13,11 @@ export type ContractRecord = {
   id: string;
   clientNom: string;
   clientEmail?: string;
+  clientEntreprise?: string;
   lines: ContractLine[];
   montant: string;
+  billingType: BillingType;
+  dureeMois?: number;
   delaisPaiement: string;
   status: ContractStatus;
   createdAt: string;
@@ -30,7 +33,15 @@ export type ContractRecord = {
 
 export type ContractSummary = Pick<
   ContractRecord,
-  "id" | "clientNom" | "clientEmail" | "status" | "createdAt" | "montant" | "signedAt"
+  | "id"
+  | "clientNom"
+  | "clientEmail"
+  | "clientEntreprise"
+  | "status"
+  | "createdAt"
+  | "montant"
+  | "billingType"
+  | "signedAt"
 >;
 
 function contractsStore() {
@@ -57,9 +68,11 @@ function toSummary(record: ContractRecord): ContractSummary {
     id: record.id,
     clientNom: record.clientNom,
     clientEmail: record.clientEmail,
+    clientEntreprise: record.clientEntreprise,
     status: record.status,
     createdAt: record.createdAt,
     montant: record.montant,
+    billingType: record.billingType,
     signedAt: record.signedAt,
   };
 }

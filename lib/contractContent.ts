@@ -13,12 +13,17 @@ export type ContractLine = {
   tauxHoraire?: number;
 };
 
+export type BillingType = "unique" | "mensuel";
+
 export type ContractParams = {
   entrepriseNom?: string;
   entrepriseAdresse?: string;
   clientNom?: string;
+  clientEntreprise?: string;
   lines?: ContractLine[];
   montant?: string;
+  billingType?: BillingType;
+  dureeMois?: number;
   delaisPaiement?: string;
   preavisJours?: string;
   villeJuridiction?: string;
@@ -71,12 +76,26 @@ export function getContractText(params: ContractParams = {}): string {
     entrepriseNom = "[Nom de l'entreprise]",
     entrepriseAdresse = "[adresse de l'entreprise]",
     clientNom = "[Nom du client]",
+    clientEntreprise,
     lines,
     montant = "[montant]",
+    billingType = "unique",
+    dureeMois,
     delaisPaiement = "[modalités de paiement, ex. 50 % à la signature, 50 % à la livraison]",
     preavisJours = "15",
     villeJuridiction = "[ville]",
   } = params;
+
+  const clientPartie = clientEntreprise
+    ? `${clientEntreprise}, représentée par ${clientNom}`
+    : clientNom;
+
+  const modalitesPrix =
+    billingType === "mensuel"
+      ? `un montant mensuel estimé de ${montant} $ CA, taxes applicables en sus, facturé chaque mois${
+          dureeMois ? ` pour une durée de ${dureeMois} mois` : ""
+        }, selon les modalités suivantes : ${delaisPaiement}`
+      : `la somme totale estimée de ${montant} $ CA, taxes applicables en sus, selon les modalités suivantes : ${delaisPaiement}`;
 
   return `CONTRAT DE PRESTATION DE SERVICES
 
@@ -84,7 +103,7 @@ ENTRE :
 ${entrepriseNom}, personne morale légalement constituée en vertu des lois de la province de Québec, ayant sa place d'affaires au ${entrepriseAdresse} (ci-après « le Prestataire »)
 
 ET :
-${clientNom} (ci-après « le Client »)
+${clientPartie} (ci-après « le Client »)
 
 (ci-après collectivement les « Parties »)
 
@@ -100,7 +119,7 @@ ${formatLines(lines)}
 Le présent contrat entre en vigueur à la date de signature électronique et demeure en vigueur jusqu'à l'exécution complète des services, sauf résiliation anticipée conformément à l'article 6.
 
 3. PRIX ET MODALITÉS DE PAIEMENT (initiales requises)
-En contrepartie des services rendus, le Client s'engage à verser au Prestataire la somme totale estimée de ${montant} $ CA, taxes applicables en sus, selon les modalités suivantes : ${delaisPaiement}.
+En contrepartie des services rendus, le Client s'engage à verser au Prestataire ${modalitesPrix}.
 
 4. OBLIGATIONS DU PRESTATAIRE
 Le Prestataire s'engage à exécuter les services avec diligence, compétence et conformément aux règles de l'art, dans le respect des délais convenus avec le Client.

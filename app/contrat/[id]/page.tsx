@@ -1,4 +1,6 @@
 import { getContract } from "@/lib/contractStore";
+import { getSettings } from "@/lib/settingsStore";
+import { parseWelcomeMessage, getWelcomeLetterSignoff } from "@/lib/welcomeLetter";
 import SignFlow from "@/components/SignFlow";
 
 export const dynamic = "force-dynamic";
@@ -49,15 +51,26 @@ export default async function ContratPage({
     );
   }
 
+  const settings = await getSettings();
+
   return (
     <SignFlow
       contract={{
         id: contract.id,
         clientNom: contract.clientNom,
         clientEmail: contract.clientEmail,
+        clientEntreprise: contract.clientEntreprise,
         lines: contract.lines,
         montant: contract.montant,
+        billingType: contract.billingType,
+        dureeMois: contract.dureeMois,
         delaisPaiement: contract.delaisPaiement,
+      }}
+      welcome={{
+        entrepriseNom: settings.entrepriseNom,
+        introVideoUrl: settings.introVideoUrl,
+        blocks: parseWelcomeMessage(settings.welcomeMessage),
+        signoff: getWelcomeLetterSignoff(settings.entrepriseNom),
       }}
     />
   );

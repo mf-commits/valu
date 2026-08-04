@@ -2,28 +2,39 @@ import {
   computeContractTotal,
   computeLineSubtotal,
   formatCurrency,
+  type BillingType,
   type ContractLine,
 } from "@/lib/contractContent";
 
 type Props = {
   clientNom: string;
+  clientEntreprise?: string;
   lines: ContractLine[];
   delaisPaiement: string;
+  billingType?: BillingType;
+  dureeMois?: number;
 };
 
 export default function MandateSummary({
   clientNom,
+  clientEntreprise,
   lines,
   delaisPaiement,
+  billingType = "unique",
+  dureeMois,
 }: Props) {
   const total = computeContractTotal(lines);
+  const montantLabel =
+    billingType === "mensuel" ? "Montant mensuel estimé" : "Montant total estimé";
 
   return (
     <div className="rounded-xl border border-brand-100 bg-brand-50 p-4">
       <p className="text-xs font-semibold uppercase tracking-wide text-brand-700">
         Description du mandat
       </p>
-      <p className="mt-1 text-sm font-medium text-slate-800">{clientNom}</p>
+      <p className="mt-1 text-sm font-medium text-slate-800">
+        {clientEntreprise ? `${clientEntreprise} — ${clientNom}` : clientNom}
+      </p>
 
       {lines.length > 0 ? (
         <ul className="mt-3 space-y-2">
@@ -59,11 +70,18 @@ export default function MandateSummary({
 
       <div className="mt-4 flex flex-col gap-1 border-t border-brand-100 pt-3 text-sm">
         <div className="flex justify-between">
-          <span className="text-slate-500">Montant total estimé</span>
+          <span className="text-slate-500">{montantLabel}</span>
           <span className="font-medium text-slate-800">
             {formatCurrency(total)} $ CA
+            {billingType === "mensuel" ? " / mois" : ""}
           </span>
         </div>
+        {billingType === "mensuel" && dureeMois && (
+          <div className="flex justify-between">
+            <span className="text-slate-500">Durée</span>
+            <span className="font-medium text-slate-800">{dureeMois} mois</span>
+          </div>
+        )}
         <div className="flex justify-between">
           <span className="text-slate-500">Modalités</span>
           <span className="max-w-[65%] text-right font-medium text-slate-800">

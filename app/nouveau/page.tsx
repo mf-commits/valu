@@ -10,14 +10,18 @@ import {
   computeContractTotal,
   computeLineSubtotal,
   formatCurrency,
+  type BillingType,
   type ContractLine,
 } from "@/lib/contractContent";
 
 export default function NouveauContrat() {
   const [clientNom, setClientNom] = useState("");
   const [clientEmail, setClientEmail] = useState("");
+  const [clientEntreprise, setClientEntreprise] = useState("");
   const [lines, setLines] = useState<ContractLine[]>([]);
   const [delaisPaiement, setDelaisPaiement] = useState("");
+  const [billingType, setBillingType] = useState<BillingType>("unique");
+  const [dureeMois, setDureeMois] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [createdId, setCreatedId] = useState<string | null>(null);
@@ -94,8 +98,11 @@ export default function NouveauContrat() {
         body: JSON.stringify({
           clientNom,
           clientEmail,
+          clientEntreprise,
           lines,
           delaisPaiement,
+          billingType,
+          dureeMois: dureeMois ? Number(dureeMois) : undefined,
         }),
       });
       const data = await res.json();
@@ -122,10 +129,13 @@ export default function NouveauContrat() {
         <div className="w-full text-left">
           <MandateSummary
             clientNom={clientNom}
+            clientEntreprise={clientEntreprise}
             lines={lines}
             delaisPaiement={
               delaisPaiement || "50 % à la signature, 50 % à la livraison"
             }
+            billingType={billingType}
+            dureeMois={dureeMois ? Number(dureeMois) : undefined}
           />
         </div>
 
@@ -146,7 +156,10 @@ export default function NouveauContrat() {
               setLines([]);
               setClientNom("");
               setClientEmail("");
+              setClientEntreprise("");
               setDelaisPaiement("");
+              setBillingType("unique");
+              setDureeMois("");
             }}
           >
             Créer un autre contrat
@@ -203,6 +216,19 @@ export default function NouveauContrat() {
             value={clientEmail}
             onChange={(e) => setClientEmail(e.target.value)}
             placeholder="client@exemple.com"
+            className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500"
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-slate-700">
+            Nom de l&apos;entreprise (optionnel)
+          </label>
+          <input
+            type="text"
+            value={clientEntreprise}
+            onChange={(e) => setClientEntreprise(e.target.value)}
+            placeholder="Entreprise du client"
             className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500"
           />
         </div>
@@ -337,12 +363,61 @@ export default function NouveauContrat() {
           + Ajouter une ligne personnalisée
         </button>
 
+        <div>
+          <label className="block text-sm font-medium text-slate-700">
+            Type de facturation
+          </label>
+          <div className="mt-1 flex gap-2">
+            <button
+              type="button"
+              onClick={() => setBillingType("unique")}
+              className={`flex-1 rounded-lg border px-3 py-2 text-xs font-medium ${
+                billingType === "unique"
+                  ? "border-brand-400 bg-brand-50 text-brand-700"
+                  : "border-slate-200 text-slate-600 hover:bg-slate-50"
+              }`}
+            >
+              Paiement unique
+            </button>
+            <button
+              type="button"
+              onClick={() => setBillingType("mensuel")}
+              className={`flex-1 rounded-lg border px-3 py-2 text-xs font-medium ${
+                billingType === "mensuel"
+                  ? "border-brand-400 bg-brand-50 text-brand-700"
+                  : "border-slate-200 text-slate-600 hover:bg-slate-50"
+              }`}
+            >
+              Récurrent mensuel
+            </button>
+          </div>
+        </div>
+
+        {billingType === "mensuel" && (
+          <div>
+            <label className="block text-sm font-medium text-slate-700">
+              Durée de l&apos;engagement (mois, optionnel)
+            </label>
+            <input
+              type="number"
+              min={1}
+              value={dureeMois}
+              onChange={(e) => setDureeMois(e.target.value)}
+              placeholder="ex. 12"
+              className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500"
+            />
+          </div>
+        )}
+
         <div className="flex items-center justify-between rounded-xl bg-brand-50 px-4 py-3">
           <span className="text-sm font-medium text-brand-700">
-            Montant total estimé
+            {billingType === "mensuel"
+              ? "Montant mensuel estimé"
+              : "Montant total estimé"}
           </span>
           <span className="text-lg font-semibold text-brand-700">
             {formatCurrency(total)} $ CA
+            {billingType === "mensuel" ? " / mois" : ""}
           </span>
         </div>
 

@@ -6,7 +6,8 @@ import SignatureCanvas, {
 } from "@/components/SignatureCanvas";
 import WelcomeLetter from "@/components/WelcomeLetter";
 import MandateSummary from "@/components/MandateSummary";
-import { getContractText, ContractLine } from "@/lib/contractContent";
+import { getContractText, BillingType, ContractLine } from "@/lib/contractContent";
+import type { LetterBlock } from "@/lib/welcomeLetter";
 
 type Step = "bienvenue" | "lecture" | "signature" | "succes";
 
@@ -20,24 +21,47 @@ export type SignFlowContract = {
   id: string;
   clientNom: string;
   clientEmail?: string;
+  clientEntreprise?: string;
   lines: ContractLine[];
   montant: string;
+  billingType: BillingType;
+  dureeMois?: number;
   delaisPaiement: string;
 };
 
-export default function SignFlow({ contract }: { contract: SignFlowContract }) {
+export type SignFlowWelcome = {
+  entrepriseNom: string;
+  introVideoUrl: string;
+  blocks: LetterBlock[];
+  signoff: string;
+};
+
+export default function SignFlow({
+  contract,
+  welcome,
+}: {
+  contract: SignFlowContract;
+  welcome: SignFlowWelcome;
+}) {
   const contractText = useMemo(
     () =>
       getContractText({
         clientNom: contract.clientNom,
+        clientEntreprise: contract.clientEntreprise,
         lines: contract.lines,
         montant: contract.montant,
+        billingType: contract.billingType,
+        dureeMois: contract.dureeMois,
         delaisPaiement: contract.delaisPaiement,
       }),
     [contract]
   );
   const sigRef = useRef<SignatureCanvasHandle>(null);
   const initialsRefs = useRef<Record<string, SignatureCanvasHandle | null>>({});
+  // Les canevas d'initiales sont démontés dès qu'on quitte l'étape "lecture" —
+  // on capture donc leurs dataUrl ici, avant le démontage, plutôt que d'aller
+  // relire les refs (devenues nulles) au moment de la signature.
+  const capturedInitials = useRef<Record<string, string>>({});
 
   const [step, setStep] = useState<Step>("bienvenue");
   const [accepted, setAccepted] = useState(false);
@@ -73,7 +97,7 @@ export default function SignFlow({ contract }: { contract: SignFlowContract }) {
       const initials = INITIAL_CHECKPOINTS.map((c) => ({
         key: c.key,
         label: c.label,
-        dataUrl: initialsRefs.current[c.key]?.toDataUrl() || "",
+        dataUrl: capturedInitials.current[c.key] || "",
       }));
 
       const res = await fetch("/api/sign", {
@@ -161,7 +185,12 @@ export default function SignFlow({ contract }: { contract: SignFlowContract }) {
       <section className="rounded-2xl border border-slate-200 bg-white/80 p-6 shadow-soft backdrop-blur sm:p-8">
         {step === "bienvenue" && (
           <div className="flex flex-col gap-6">
-            <WelcomeLetter />
+            <WelcomeLetter
+              entrepriseNom={welcome.entrepriseNom}
+              introVideoUrl={welcome.introVideoUrl}
+              blocks={welcome.blocks}
+              signoff={welcome.signoff}
+            />
             <button
               type="button"
               onClick={() => setStep("lecture")}
@@ -176,11 +205,17 @@ export default function SignFlow({ contract }: { contract: SignFlowContract }) {
           <>
             <MandateSummary
               clientNom={contract.clientNom}
+              clientEntreprise={contract.clientEntreprise}
               lines={contract.lines}
               delaisPaiement={contract.delaisPaiement}
+              billingType={contract.billingType}
+              dureeMois={contract.dureeMois}
             />
 
-            <div className="mt-4 max-h-80 overflow-y-auto rounded-xl border border-slate-100 bg-slate-50 p-4 text-sm leading-relaxed text-slate-700 whitespace-pre-line">
+            <p className="mt-4 text-xs font-medium uppercase tracking-wide text-slate-400">
+              Contrat de prestation de services
+            </p>
+            <div className="mt-2 rounded-xl border border-slate-100 bg-slate-50 p-4 text-sm leading-relaxed text-slate-700 whitespace-pre-line">
               {contractText}
             </div>
 
@@ -233,7 +268,13 @@ export default function SignFlow({ contract }: { contract: SignFlowContract }) {
                 disabled={!allInitialsFilled}
                 onChange={(e) => {
                   setAccepted(e.target.checked);
-                  if (e.target.checked) setStep("signature");
+                  if (e.target.checked) {
+                    INITIAL_CHECKPOINTS.forEach((c) => {
+                      capturedInitials.current[c.key] =
+                        initialsRefs.current[c.key]?.toDataUrl() || "";
+                    });
+                    setStep("signature");
+                  }
                 }}
                 className="mt-0.5 h-4 w-4 rounded border-slate-300 text-brand-600 focus:ring-brand-500 disabled:opacity-40"
               />

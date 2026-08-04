@@ -1,20 +1,31 @@
-import { companyConfig } from "@/lib/companyConfig";
-import { welcomeLetterBlocks, getWelcomeLetterSignoff } from "@/lib/welcomeLetter";
+import type { LetterBlock } from "@/lib/welcomeLetter";
 import { getVideoEmbed } from "@/lib/videoEmbed";
 import Logo from "@/components/Logo";
 
-export default function WelcomeLetter() {
-  const video = getVideoEmbed(companyConfig.introVideoUrl);
+type Props = {
+  entrepriseNom: string;
+  introVideoUrl: string;
+  blocks: LetterBlock[];
+  signoff: string;
+};
+
+export default function WelcomeLetter({
+  entrepriseNom,
+  introVideoUrl,
+  blocks,
+  signoff,
+}: Props) {
+  const video = getVideoEmbed(introVideoUrl);
 
   return (
     <div className="space-y-4 text-sm leading-relaxed text-slate-700">
       <div className="text-center">
         <Logo className="mx-auto mb-4 h-7" />
         <p className="text-sm font-medium uppercase tracking-wide text-brand-600">
-          Bienvenue chez {companyConfig.entrepriseNom}
+          Bienvenue chez {entrepriseNom}
         </p>
         <h2 className="font-title mt-1 text-2xl font-semibold tracking-tight text-slate-900">
-          Bonjour et bienvenue chez Valu
+          Bonjour et bienvenue
         </h2>
       </div>
 
@@ -50,7 +61,7 @@ export default function WelcomeLetter() {
       )}
 
       <div className="max-h-96 overflow-y-auto rounded-xl border border-slate-100 bg-slate-50 p-5">
-        {welcomeLetterBlocks.map((block, i) => {
+        {blocks.map((block, i) => {
           if (block.type === "heading") {
             return (
               <h3
@@ -77,9 +88,7 @@ export default function WelcomeLetter() {
           );
         })}
 
-        <p className="mt-5 whitespace-pre-line text-slate-500">
-          {getWelcomeLetterSignoff()}
-        </p>
+        <p className="mt-5 whitespace-pre-line text-slate-500">{signoff}</p>
       </div>
     </div>
   );

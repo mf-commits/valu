@@ -33,6 +33,12 @@ export default async function Dashboard() {
           >
             + Nouveau contrat
           </Link>
+          <Link
+            href="/parametres"
+            className="text-xs font-medium text-slate-400 hover:text-slate-600 hover:underline"
+          >
+            Paramètres
+          </Link>
           <a
             href="/api/auth/logout"
             className="text-xs font-medium text-slate-400 hover:text-slate-600 hover:underline"
@@ -61,9 +67,14 @@ export default async function Dashboard() {
                 className="flex flex-col gap-2 px-5 py-4 sm:flex-row sm:items-center sm:justify-between"
               >
                 <div>
-                  <p className="text-sm font-medium text-slate-800">{c.clientNom}</p>
+                  <p className="text-sm font-medium text-slate-800">
+                    {c.clientEntreprise
+                      ? `${c.clientEntreprise} — ${c.clientNom}`
+                      : c.clientNom}
+                  </p>
                   <p className="text-xs text-slate-400">
-                    {c.montant} $ CA · créé le {formatDate(c.createdAt)}
+                    {c.montant} $ CA{c.billingType === "mensuel" ? " / mois" : ""} ·
+                    créé le {formatDate(c.createdAt)}
                     {c.signedAt ? ` · signé le ${formatDate(c.signedAt)}` : ""}
                   </p>
                 </div>

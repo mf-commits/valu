@@ -3,6 +3,7 @@ import { createContract } from "@/lib/contractStore";
 import {
   computeContractTotal,
   formatCurrency,
+  type BillingType,
   type ContractLine,
 } from "@/lib/contractContent";
 
@@ -11,11 +12,22 @@ export const runtime = "nodejs";
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { clientNom, clientEmail, lines, delaisPaiement } = body as {
+    const {
+      clientNom,
+      clientEmail,
+      clientEntreprise,
+      lines,
+      delaisPaiement,
+      billingType,
+      dureeMois,
+    } = body as {
       clientNom?: string;
       clientEmail?: string;
+      clientEntreprise?: string;
       lines?: ContractLine[];
       delaisPaiement?: string;
+      billingType?: BillingType;
+      dureeMois?: number;
     };
 
     const cleanLines: ContractLine[] = (lines || [])
@@ -47,8 +59,11 @@ export async function POST(request: NextRequest) {
     const contract = await createContract({
       clientNom: clientNom.trim(),
       clientEmail: clientEmail?.trim(),
+      clientEntreprise: clientEntreprise?.trim() || undefined,
       lines: cleanLines,
       montant: formatCurrency(total),
+      billingType: billingType === "mensuel" ? "mensuel" : "unique",
+      dureeMois: dureeMois && dureeMois > 0 ? Number(dureeMois) : undefined,
       delaisPaiement:
         delaisPaiement?.trim() || "50 % à la signature, 50 % à la livraison",
     });
