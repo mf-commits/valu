@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { listContracts } from "@/lib/contractStore";
 import SendLinkActions from "@/components/SendLinkActions";
+import DeleteContractButton from "@/components/DeleteContractButton";
 import Logo from "@/components/Logo";
 
 export const dynamic = "force-dynamic";
@@ -99,11 +100,14 @@ export default async function Dashboard() {
                       Télécharger PDF
                     </a>
                   ) : (
-                    <SendLinkActions
-                      path={`/contrat/${c.id}`}
-                      clientNom={c.clientNom}
-                      clientEmail={c.clientEmail}
-                    />
+                    <>
+                      <SendLinkActions
+                        path={`/contrat/${c.id}`}
+                        clientNom={c.clientNom}
+                        clientEmail={c.clientEmail}
+                      />
+                      <DeleteContractButton id={c.id} clientNom={c.clientNom} />
+                    </>
                   )}
                 </div>
               </li>

@@ -1,7 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
 
 export const config = {
-  matcher: ["/", "/nouveau", "/parametres", "/api/contracts", "/api/settings"],
+  // Note : "/api/contracts/:id" protège la suppression d'un contrat, mais ne
+  // couvre pas "/api/contracts/:id/pdf" (segment supplémentaire) — ce
+  // dernier doit rester public, le client le télécharge depuis la page
+  // publique /contrat/[id] une fois son contrat signé.
+  matcher: [
+    "/",
+    "/nouveau",
+    "/parametres",
+    "/api/contracts",
+    "/api/contracts/:id",
+    "/api/settings",
+  ],
 };
 
 async function sha256Hex(input: string): Promise<string> {

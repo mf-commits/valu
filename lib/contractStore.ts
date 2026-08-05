@@ -127,3 +127,13 @@ export async function updateContract(
 export async function listContracts(): Promise<ContractSummary[]> {
   return readIndex();
 }
+
+// Supprime un contrat — réservé aux contrats "pending" (jamais signés) côté
+// appelant. Un contrat déjà signé constitue un document légal avec un
+// certificat de traçabilité : on ne le supprime jamais, on le garde comme
+// registre. Voir app/api/contracts/[id]/route.ts pour la vérification.
+export async function deleteContract(id: string): Promise<void> {
+  await contractsStore().delete(id);
+  const index = await readIndex();
+  await writeIndex(index.filter((entry) => entry.id !== id));
+}

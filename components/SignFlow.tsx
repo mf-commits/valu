@@ -210,6 +210,13 @@ export default function SignFlow({
 
         {step === "lecture" && (
           <>
+            <button
+              type="button"
+              onClick={() => setStep("bienvenue")}
+              className="mb-4 text-xs font-medium text-slate-400 hover:text-slate-600 hover:underline"
+            >
+              {s.lecture.back}
+            </button>
             <MandateSummary
               clientNom={contract.clientNom}
               clientEntreprise={contract.clientEntreprise}
@@ -280,7 +287,6 @@ export default function SignFlow({
                       capturedInitials.current[c.key] =
                         initialsRefs.current[c.key]?.toDataUrl() || "";
                     });
-                    setStep("signature");
                   }
                 }}
                 className="mt-0.5 h-4 w-4 rounded border-slate-300 text-brand-600 focus:ring-brand-500 disabled:opacity-40"
@@ -292,11 +298,27 @@ export default function SignFlow({
                 {s.lecture.initialsRequired}
               </p>
             )}
+            {accepted && allInitialsFilled && (
+              <button
+                type="button"
+                onClick={() => setStep("signature")}
+                className="mt-4 w-full rounded-xl bg-brand-500 px-4 py-3 text-sm font-semibold text-white shadow-soft transition hover:bg-brand-600"
+              >
+                {s.lecture.continueButton}
+              </button>
+            )}
           </>
         )}
 
         {step === "signature" && (
           <div className="space-y-5">
+            <button
+              type="button"
+              onClick={() => setStep("lecture")}
+              className="text-xs font-medium text-slate-400 hover:text-slate-600 hover:underline"
+            >
+              {s.signature.back}
+            </button>
             <div className="grid gap-4 sm:grid-cols-2">
               <div>
                 <label className="block text-sm font-medium text-slate-700">

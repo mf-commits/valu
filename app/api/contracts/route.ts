@@ -69,7 +69,10 @@ export async function POST(request: NextRequest) {
       billingType: billingType === "mensuel" ? "mensuel" : "unique",
       dureeMois: dureeMois && dureeMois > 0 ? Number(dureeMois) : undefined,
       delaisPaiement:
-        delaisPaiement?.trim() || "50 % à la signature, 50 % à la livraison",
+        delaisPaiement?.trim() ||
+        (lang === "en"
+          ? "50% upon signing, 50% upon delivery"
+          : "50 % à la signature, 50 % à la livraison"),
     });
 
     return NextResponse.json({ id: contract.id, montant: formatCurrency(total) });

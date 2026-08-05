@@ -26,6 +26,7 @@ export const uiStrings = {
       videoLinkFallback: "▶ Regarder notre message de bienvenue",
     },
     lecture: {
+      back: "← Retour",
       contractHeading: "Contrat de prestation de services",
       initialsPrompt:
         "Merci de parapher les éléments suivants pour confirmer votre lecture :",
@@ -34,6 +35,7 @@ export const uiStrings = {
         "J'ai lu et je comprends l'ensemble des termes du contrat ci-dessus, et j'accepte d'y être lié(e).",
       initialsRequired:
         "Les trois paraphes ci-dessus sont requis avant l'acceptation.",
+      continueButton: "Continuer vers la signature",
       checkpoints: {
         prix: "Prix et modalités de paiement (article 3)",
         resiliation: "Politique de résiliation (article 6)",
@@ -41,6 +43,7 @@ export const uiStrings = {
       },
     },
     signature: {
+      back: "← Retour",
       fullName: "Nom complet *",
       fullNamePlaceholder: "Prénom Nom",
       email: "Courriel (optionnel)",
@@ -125,12 +128,14 @@ export const uiStrings = {
       videoLinkFallback: "▶ Watch our welcome message",
     },
     lecture: {
+      back: "← Back",
       contractHeading: "Service agreement",
       initialsPrompt: "Please initial the following to confirm you've read them:",
       erase: "Clear",
       acceptLabel:
         "I have read and understand all the terms of the agreement above, and I agree to be bound by it.",
       initialsRequired: "All three initials above are required before accepting.",
+      continueButton: "Continue to signature",
       checkpoints: {
         prix: "Price and payment terms (Section 3)",
         resiliation: "Termination policy (Section 6)",
@@ -138,6 +143,7 @@ export const uiStrings = {
       },
     },
     signature: {
+      back: "← Back",
       fullName: "Full name *",
       fullNamePlaceholder: "First Last",
       email: "Email (optional)",

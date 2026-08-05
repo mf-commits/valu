@@ -33,15 +33,22 @@ export default function NouveauContrat() {
   function toggleService(serviceId: string) {
     const service = servicesCatalog.find((s) => s.id === serviceId);
     if (!service) return;
-    const exists = lines.some((l) => l.label === service.label);
+    // On coche toujours en français dans l'interface (cette page reste en
+    // français), mais le texte inséré dans le contrat est celui de la
+    // langue choisie pour ce contrat.
+    const exists = lines.some(
+      (l) => l.label === service.label || l.label === service.labelEn
+    );
     if (exists) {
-      setLines((prev) => prev.filter((l) => l.label !== service.label));
+      setLines((prev) =>
+        prev.filter((l) => l.label !== service.label && l.label !== service.labelEn)
+      );
     } else {
       setLines((prev) => [
         ...prev,
         {
-          label: service.label,
-          description: service.description,
+          label: lang === "en" ? service.labelEn : service.label,
+          description: lang === "en" ? service.descriptionEn : service.description,
           quantite: 1,
           heures: 0,
           tauxHoraire: companyConfig.tauxHoraireDefaut,
@@ -277,7 +284,9 @@ export default function NouveauContrat() {
           </label>
           <div className="mt-2 grid grid-cols-2 gap-2 sm:grid-cols-3">
             {servicesCatalog.map((service) => {
-              const checked = lines.some((l) => l.label === service.label);
+              const checked = lines.some(
+                (l) => l.label === service.label || l.label === service.labelEn
+              );
               return (
                 <label
                   key={service.id}
@@ -305,6 +314,12 @@ export default function NouveauContrat() {
             <label className="block text-sm font-medium text-slate-700">
               Lignes du contrat — estimation par heures
             </label>
+            {lang === "en" && (
+              <p className="-mt-2 text-xs text-slate-400">
+                Contrat en anglais : écris le nom et la description de chaque
+                ligne en anglais — c&apos;est repris tel quel dans le contrat.
+              </p>
+            )}
             {lines.map((line, i) => {
               const subtotal = computeLineSubtotal(line);
               return (
@@ -467,9 +482,18 @@ export default function NouveauContrat() {
             type="text"
             value={delaisPaiement}
             onChange={(e) => setDelaisPaiement(e.target.value)}
-            placeholder="50 % à la signature, 50 % à la livraison"
+            placeholder={
+              lang === "en"
+                ? "e.g. 50% upon signing, 50% upon delivery"
+                : "50 % à la signature, 50 % à la livraison"
+            }
             className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500"
           />
+          {lang === "en" && (
+            <p className="mt-1 text-xs text-slate-400">
+              Écris ce champ en anglais — il apparaît tel quel dans le contrat.
+            </p>
+          )}
         </div>
 
         {error && (
