@@ -16,6 +16,7 @@ export async function POST(request: NextRequest) {
     const {
       clientNom,
       clientEmail,
+      clientTelephone,
       clientEntreprise,
       lines,
       delaisPaiement,
@@ -25,6 +26,7 @@ export async function POST(request: NextRequest) {
     } = body as {
       clientNom?: string;
       clientEmail?: string;
+      clientTelephone?: string;
       clientEntreprise?: string;
       lines?: ContractLine[];
       delaisPaiement?: string;
@@ -63,6 +65,7 @@ export async function POST(request: NextRequest) {
       lang: lang === "en" ? "en" : "fr",
       clientNom: clientNom.trim(),
       clientEmail: clientEmail?.trim(),
+      clientTelephone: clientTelephone?.trim() || undefined,
       clientEntreprise: clientEntreprise?.trim() || undefined,
       lines: cleanLines,
       montant: formatCurrency(total),

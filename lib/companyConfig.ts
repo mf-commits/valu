@@ -5,7 +5,9 @@
 export const companyConfig = {
   entrepriseNom: "Services Valu",
   entrepriseAdresse: "[Adresse de Services Valu]",
-  villeJuridiction: "Montréal",
+  entrepriseCourriel: "hello@servicesvalu.com",
+  entrepriseTelephone: "(418) 953-4746",
+  villeJuridiction: "Québec",
   preavisJours: "15",
   founderName: "Fredo",
   founderTitle: "Fondatrice",
@@ -16,4 +18,8 @@ export const companyConfig = {
   // Lien vers une vidéo d'introduction (YouTube, Loom, Vimeo...) montrée au
   // client sur l'écran de bienvenue. Laisse vide pour ne pas l'afficher.
   introVideoUrl: "",
+  // Politique de retard de paiement (article 2 du contrat).
+  penaliteRetardPourcent: "5",
+  penaliteRetardJours: "5",
+  suspensionApresJours: "10",
 };

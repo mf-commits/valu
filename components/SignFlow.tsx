@@ -22,6 +22,7 @@ export type SignFlowContract = {
   lang: ContractLang;
   clientNom: string;
   clientEmail?: string;
+  clientTelephone?: string;
   clientEntreprise?: string;
   lines: ContractLine[];
   montant: string;
@@ -30,8 +31,13 @@ export type SignFlowContract = {
   delaisPaiement: string;
   entrepriseNom?: string;
   entrepriseAdresse?: string;
+  entrepriseCourriel?: string;
+  entrepriseTelephone?: string;
   villeJuridiction?: string;
   preavisJours?: string;
+  penaliteRetardPourcent?: string;
+  penaliteRetardJours?: string;
+  suspensionApresJours?: string;
 };
 
 export type SignFlowWelcome = {
@@ -51,9 +57,12 @@ export default function SignFlow({
   const s = t(contract.lang);
 
   const INITIAL_CHECKPOINTS = [
-    { key: "prix", label: s.lecture.checkpoints.prix },
-    { key: "resiliation", label: s.lecture.checkpoints.resiliation },
+    { key: "paiement", label: s.lecture.checkpoints.paiement },
+    { key: "obligations", label: s.lecture.checkpoints.obligations },
+    { key: "securite", label: s.lecture.checkpoints.securite },
+    { key: "mediatique", label: s.lecture.checkpoints.mediatique },
     { key: "responsabilite", label: s.lecture.checkpoints.responsabilite },
+    { key: "heures", label: s.lecture.checkpoints.heures },
   ] as const;
 
   const contractText = useMemo(
@@ -61,6 +70,8 @@ export default function SignFlow({
       getContractText({
         lang: contract.lang,
         clientNom: contract.clientNom,
+        clientEmail: contract.clientEmail,
+        clientTelephone: contract.clientTelephone,
         clientEntreprise: contract.clientEntreprise,
         lines: contract.lines,
         montant: contract.montant,
@@ -69,8 +80,13 @@ export default function SignFlow({
         delaisPaiement: contract.delaisPaiement,
         entrepriseNom: contract.entrepriseNom,
         entrepriseAdresse: contract.entrepriseAdresse,
+        entrepriseCourriel: contract.entrepriseCourriel,
+        entrepriseTelephone: contract.entrepriseTelephone,
         villeJuridiction: contract.villeJuridiction,
         preavisJours: contract.preavisJours,
+        penaliteRetardPourcent: contract.penaliteRetardPourcent,
+        penaliteRetardJours: contract.penaliteRetardJours,
+        suspensionApresJours: contract.suspensionApresJours,
       }),
     [contract]
   );

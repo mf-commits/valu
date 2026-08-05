@@ -18,6 +18,7 @@ import {
 export default function NouveauContrat() {
   const [clientNom, setClientNom] = useState("");
   const [clientEmail, setClientEmail] = useState("");
+  const [clientTelephone, setClientTelephone] = useState("");
   const [clientEntreprise, setClientEntreprise] = useState("");
   const [lines, setLines] = useState<ContractLine[]>([]);
   const [delaisPaiement, setDelaisPaiement] = useState("");
@@ -107,6 +108,7 @@ export default function NouveauContrat() {
         body: JSON.stringify({
           clientNom,
           clientEmail,
+          clientTelephone,
           clientEntreprise,
           lines,
           delaisPaiement,
@@ -166,6 +168,7 @@ export default function NouveauContrat() {
               setLines([]);
               setClientNom("");
               setClientEmail("");
+              setClientTelephone("");
               setClientEntreprise("");
               setDelaisPaiement("");
               setBillingType("unique");
@@ -261,6 +264,19 @@ export default function NouveauContrat() {
             value={clientEmail}
             onChange={(e) => setClientEmail(e.target.value)}
             placeholder="client@exemple.com"
+            className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500"
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-slate-700">
+            Téléphone du client (optionnel)
+          </label>
+          <input
+            type="tel"
+            value={clientTelephone}
+            onChange={(e) => setClientTelephone(e.target.value)}
+            placeholder="(418) 555-0123"
             className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500"
           />
         </div>

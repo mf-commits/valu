@@ -101,11 +101,12 @@ français.
 
 ## Autorisation par initiales
 
-Avant de pouvoir cocher la case d'acceptation, le client doit parapher trois
+Avant de pouvoir cocher la case d'acceptation, le client doit parapher six
 clauses clés directement dans le navigateur (canvas tactile/souris, comme la
-signature) : prix et modalités de paiement, résiliation, et limitation de
-responsabilité. Ces paraphes sont enregistrés et intégrés au PDF signé, dans
-une section « Initiales de confirmation ». Pour ajouter ou retirer des
+signature) : modalités de paiement, obligations du client, sécurité des
+données, autorisation médiatique, limitation de responsabilité, et heures de
+service/fermetures. Ces paraphes sont enregistrés et intégrés au PDF signé,
+dans une section « Initiales de confirmation ». Pour ajouter ou retirer des
 clauses à parapher, modifie `INITIAL_CHECKPOINTS` dans
 `components/SignFlow.tsx` (les clés doivent correspondre à celles vérifiées
 dans `app/api/sign/route.ts`).

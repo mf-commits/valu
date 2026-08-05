@@ -14,6 +14,7 @@ export type ContractRecord = {
   lang: ContractLang;
   clientNom: string;
   clientEmail?: string;
+  clientTelephone?: string;
   clientEntreprise?: string;
   lines: ContractLine[];
   montant: string;

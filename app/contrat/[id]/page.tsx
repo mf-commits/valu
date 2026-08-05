@@ -63,6 +63,7 @@ export default async function ContratPage({
         lang: contract.lang,
         clientNom: contract.clientNom,
         clientEmail: contract.clientEmail,
+        clientTelephone: contract.clientTelephone,
         clientEntreprise: contract.clientEntreprise,
         lines: contract.lines,
         montant: contract.montant,
@@ -71,8 +72,13 @@ export default async function ContratPage({
         delaisPaiement: contract.delaisPaiement,
         entrepriseNom: settings.entrepriseNom,
         entrepriseAdresse: settings.entrepriseAdresse,
+        entrepriseCourriel: companyConfig.entrepriseCourriel,
+        entrepriseTelephone: companyConfig.entrepriseTelephone,
         villeJuridiction: companyConfig.villeJuridiction,
         preavisJours: companyConfig.preavisJours,
+        penaliteRetardPourcent: companyConfig.penaliteRetardPourcent,
+        penaliteRetardJours: companyConfig.penaliteRetardJours,
+        suspensionApresJours: companyConfig.suspensionApresJours,
       }}
       welcome={{
         entrepriseNom: settings.entrepriseNom,

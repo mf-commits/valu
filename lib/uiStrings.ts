@@ -34,12 +34,15 @@ export const uiStrings = {
       acceptLabel:
         "J'ai lu et je comprends l'ensemble des termes du contrat ci-dessus, et j'accepte d'y être lié(e).",
       initialsRequired:
-        "Les trois paraphes ci-dessus sont requis avant l'acceptation.",
+        "Tous les paraphes ci-dessus sont requis avant l'acceptation.",
       continueButton: "Continuer vers la signature",
       checkpoints: {
-        prix: "Prix et modalités de paiement (article 3)",
-        resiliation: "Politique de résiliation (article 6)",
-        responsabilite: "Limitation de responsabilité (article 9)",
+        paiement: "Modalités de paiement et facturation (article 2)",
+        obligations: "Obligations et collaboration du Client (article 4)",
+        securite: "Sécurité des données et enregistrement (article 5)",
+        mediatique: "Utilisation et autorisation médiatique (article 9)",
+        responsabilite: "Limitation de responsabilité (article 11)",
+        heures: "Heures de service et fermetures (article 12)",
       },
     },
     signature: {
@@ -60,7 +63,7 @@ export const uiStrings = {
         "La signature est vide. Dessine ta signature avant de continuer.",
       errorGeneric: "Une erreur est survenue.",
       errorMissingInitials:
-        "Les trois paraphes (prix, résiliation, responsabilité) sont requis avant la signature.",
+        "Tous les paraphes requis doivent être apposés avant la signature.",
     },
     success: {
       title: "Contrat signé avec succès",
@@ -134,12 +137,15 @@ export const uiStrings = {
       erase: "Clear",
       acceptLabel:
         "I have read and understand all the terms of the agreement above, and I agree to be bound by it.",
-      initialsRequired: "All three initials above are required before accepting.",
+      initialsRequired: "All initials above are required before accepting.",
       continueButton: "Continue to signature",
       checkpoints: {
-        prix: "Price and payment terms (Section 3)",
-        resiliation: "Termination policy (Section 6)",
-        responsabilite: "Limitation of liability (Section 9)",
+        paiement: "Payment and billing terms (Section 2)",
+        obligations: "Client obligations and collaboration (Section 4)",
+        securite: "Data security and recording (Section 5)",
+        mediatique: "Media use and authorization (Section 9)",
+        responsabilite: "Limitation of liability (Section 11)",
+        heures: "Service hours and closures (Section 12)",
       },
     },
     signature: {
@@ -159,7 +165,7 @@ export const uiStrings = {
       errorEmptySignature: "The signature is empty. Draw your signature before continuing.",
       errorGeneric: "Something went wrong.",
       errorMissingInitials:
-        "All three initials (price, termination, liability) are required before signing.",
+        "All required initials must be provided before signing.",
     },
     success: {
       title: "Contract signed successfully",

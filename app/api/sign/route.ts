@@ -11,7 +11,14 @@ import {
   parseWelcomeMessage,
 } from "@/lib/welcomeLetter";
 
-const REQUIRED_INITIAL_KEYS = ["prix", "resiliation", "responsabilite"];
+const REQUIRED_INITIAL_KEYS = [
+  "paiement",
+  "obligations",
+  "securite",
+  "mediatique",
+  "responsabilite",
+  "heures",
+];
 
 export const runtime = "nodejs";
 
@@ -51,7 +58,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(
         {
           error:
-            "Les trois paraphes (prix, résiliation, responsabilité) sont requis avant la signature.",
+            "Tous les paraphes requis doivent être apposés avant la signature.",
         },
         { status: 400 }
       );
@@ -76,6 +83,8 @@ export async function POST(request: NextRequest) {
     const contractText = getContractText({
       lang: record.lang,
       clientNom: record.clientNom,
+      clientEmail: record.clientEmail,
+      clientTelephone: record.clientTelephone,
       clientEntreprise: record.clientEntreprise,
       lines: record.lines,
       montant: record.montant,
@@ -84,8 +93,13 @@ export async function POST(request: NextRequest) {
       delaisPaiement: record.delaisPaiement,
       entrepriseNom: settings.entrepriseNom,
       entrepriseAdresse: settings.entrepriseAdresse,
+      entrepriseCourriel: companyConfig.entrepriseCourriel,
+      entrepriseTelephone: companyConfig.entrepriseTelephone,
       villeJuridiction: companyConfig.villeJuridiction,
       preavisJours: companyConfig.preavisJours,
+      penaliteRetardPourcent: companyConfig.penaliteRetardPourcent,
+      penaliteRetardJours: companyConfig.penaliteRetardJours,
+      suspensionApresJours: companyConfig.suspensionApresJours,
     });
 
     const timestamp = new Date().toLocaleString("fr-CA", {
