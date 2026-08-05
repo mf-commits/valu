@@ -4,6 +4,7 @@ import {
   computeContractTotal,
   formatCurrency,
   type BillingType,
+  type ContractLang,
   type ContractLine,
 } from "@/lib/contractContent";
 
@@ -20,6 +21,7 @@ export async function POST(request: NextRequest) {
       delaisPaiement,
       billingType,
       dureeMois,
+      lang,
     } = body as {
       clientNom?: string;
       clientEmail?: string;
@@ -28,6 +30,7 @@ export async function POST(request: NextRequest) {
       delaisPaiement?: string;
       billingType?: BillingType;
       dureeMois?: number;
+      lang?: ContractLang;
     };
 
     const cleanLines: ContractLine[] = (lines || [])
@@ -57,6 +60,7 @@ export async function POST(request: NextRequest) {
     const total = computeContractTotal(cleanLines);
 
     const contract = await createContract({
+      lang: lang === "en" ? "en" : "fr",
       clientNom: clientNom.trim(),
       clientEmail: clientEmail?.trim(),
       clientEntreprise: clientEntreprise?.trim() || undefined,

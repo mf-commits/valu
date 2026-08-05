@@ -11,19 +11,26 @@ export async function GET() {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { entrepriseNom, entrepriseAdresse, introVideoUrl, welcomeMessage } =
-      body as {
-        entrepriseNom?: string;
-        entrepriseAdresse?: string;
-        introVideoUrl?: string;
-        welcomeMessage?: string;
-      };
+    const {
+      entrepriseNom,
+      entrepriseAdresse,
+      introVideoUrl,
+      welcomeMessage,
+      welcomeMessageEn,
+    } = body as {
+      entrepriseNom?: string;
+      entrepriseAdresse?: string;
+      introVideoUrl?: string;
+      welcomeMessage?: string;
+      welcomeMessageEn?: string;
+    };
 
     const updated = await saveSettings({
       entrepriseNom: entrepriseNom?.trim(),
       entrepriseAdresse: entrepriseAdresse?.trim(),
       introVideoUrl: introVideoUrl?.trim(),
       welcomeMessage,
+      welcomeMessageEn,
     });
 
     return NextResponse.json(updated);

@@ -18,7 +18,7 @@ export default async function Dashboard() {
 
   return (
     <main className="mx-auto flex min-h-screen max-w-3xl flex-col gap-6 px-4 py-10 sm:py-16">
-      <header className="flex items-center justify-between">
+      <header className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <Logo className="mb-3 h-6" />
           <h1 className="font-title text-2xl font-semibold tracking-tight">Mes contrats</h1>
@@ -26,22 +26,22 @@ export default async function Dashboard() {
             Crée un contrat, envoie le lien au client, télécharge le PDF signé.
           </p>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
           <Link
             href="/nouveau"
-            className="rounded-xl bg-brand-500 px-4 py-2.5 text-sm font-semibold text-white shadow-soft hover:bg-brand-600"
+            className="whitespace-nowrap rounded-xl bg-brand-500 px-4 py-2.5 text-sm font-semibold text-white shadow-soft hover:bg-brand-600"
           >
             + Nouveau contrat
           </Link>
           <Link
             href="/parametres"
-            className="text-xs font-medium text-slate-400 hover:text-slate-600 hover:underline"
+            className="whitespace-nowrap text-xs font-medium text-slate-400 hover:text-slate-600 hover:underline"
           >
             Paramètres
           </Link>
           <a
             href="/api/auth/logout"
-            className="text-xs font-medium text-slate-400 hover:text-slate-600 hover:underline"
+            className="whitespace-nowrap text-xs font-medium text-slate-400 hover:text-slate-600 hover:underline"
           >
             Se déconnecter
           </a>
@@ -71,6 +71,9 @@ export default async function Dashboard() {
                     {c.clientEntreprise
                       ? `${c.clientEntreprise} — ${c.clientNom}`
                       : c.clientNom}
+                    <span className="ml-2 rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-semibold uppercase text-slate-500">
+                      {c.lang === "en" ? "EN" : "FR"}
+                    </span>
                   </p>
                   <p className="text-xs text-slate-400">
                     {c.montant} $ CA{c.billingType === "mensuel" ? " / mois" : ""} ·

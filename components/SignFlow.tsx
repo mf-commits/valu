@@ -6,19 +6,20 @@ import SignatureCanvas, {
 } from "@/components/SignatureCanvas";
 import WelcomeLetter from "@/components/WelcomeLetter";
 import MandateSummary from "@/components/MandateSummary";
-import { getContractText, BillingType, ContractLine } from "@/lib/contractContent";
+import {
+  getContractText,
+  BillingType,
+  ContractLang,
+  ContractLine,
+} from "@/lib/contractContent";
 import type { LetterBlock } from "@/lib/welcomeLetter";
+import { t } from "@/lib/uiStrings";
 
 type Step = "bienvenue" | "lecture" | "signature" | "succes";
 
-const INITIAL_CHECKPOINTS = [
-  { key: "prix", label: "Prix et modalités de paiement (article 3)" },
-  { key: "resiliation", label: "Politique de résiliation (article 6)" },
-  { key: "responsabilite", label: "Limitation de responsabilité (article 9)" },
-] as const;
-
 export type SignFlowContract = {
   id: string;
+  lang: ContractLang;
   clientNom: string;
   clientEmail?: string;
   clientEntreprise?: string;
@@ -43,9 +44,18 @@ export default function SignFlow({
   contract: SignFlowContract;
   welcome: SignFlowWelcome;
 }) {
+  const s = t(contract.lang);
+
+  const INITIAL_CHECKPOINTS = [
+    { key: "prix", label: s.lecture.checkpoints.prix },
+    { key: "resiliation", label: s.lecture.checkpoints.resiliation },
+    { key: "responsabilite", label: s.lecture.checkpoints.responsabilite },
+  ] as const;
+
   const contractText = useMemo(
     () =>
       getContractText({
+        lang: contract.lang,
         clientNom: contract.clientNom,
         clientEntreprise: contract.clientEntreprise,
         lines: contract.lines,
@@ -83,11 +93,11 @@ export default function SignFlow({
     setError(null);
 
     if (!signerName.trim()) {
-      setError("Merci d'indiquer ton nom complet.");
+      setError(s.signature.errorMissingName);
       return;
     }
     if (!sigRef.current || sigRef.current.isEmpty()) {
-      setError("La signature est vide. Dessine ta signature avant de continuer.");
+      setError(s.signature.errorEmptySignature);
       return;
     }
 
@@ -114,7 +124,7 @@ export default function SignFlow({
 
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
-        throw new Error(data.error || "Une erreur est survenue.");
+        throw new Error(data.error || s.signature.errorGeneric);
       }
 
       const blob = await res.blob();
@@ -127,8 +137,7 @@ export default function SignFlow({
       a.download = "contrat-signe.pdf";
       a.click();
     } catch (err: unknown) {
-      const message =
-        err instanceof Error ? err.message : "Une erreur est survenue.";
+      const message = err instanceof Error ? err.message : s.signature.errorGeneric;
       setError(message);
     } finally {
       setLoading(false);
@@ -136,33 +145,30 @@ export default function SignFlow({
   }
 
   const steps: { key: Step; label: string }[] = [
-    { key: "bienvenue", label: "Bienvenue" },
-    { key: "lecture", label: "Lecture" },
-    { key: "signature", label: "Signature" },
-    { key: "succes", label: "Confirmation" },
+    { key: "bienvenue", label: s.steps.bienvenue },
+    { key: "lecture", label: s.steps.lecture },
+    { key: "signature", label: s.steps.signature },
+    { key: "succes", label: s.steps.succes },
   ];
-  const currentIndex = steps.findIndex((s) => s.key === step);
+  const currentIndex = steps.findIndex((step_) => step_.key === step);
 
   return (
     <main className="mx-auto flex min-h-screen max-w-3xl flex-col gap-6 px-4 py-10 sm:py-16">
       {step !== "bienvenue" && (
         <header className="text-center">
           <p className="text-sm font-medium uppercase tracking-wide text-brand-600">
-            Signature électronique
+            {s.header.eyebrow}
           </p>
           <h1 className="font-title mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">
-            Signez votre contrat en ligne
+            {s.header.title}
           </h1>
-          <p className="mt-3 text-slate-500">
-            Lisez le contrat, apposez vos initiales et votre signature, recevez
-            votre copie signée en PDF.
-          </p>
+          <p className="mt-3 text-slate-500">{s.header.subtitle}</p>
         </header>
       )}
 
       <ol className="flex items-center justify-center gap-2 text-xs font-medium text-slate-400">
-        {steps.map((s, i) => (
-          <li key={s.key} className="flex items-center gap-2">
+        {steps.map((stepItem, i) => (
+          <li key={stepItem.key} className="flex items-center gap-2">
             <span
               className={`flex h-6 w-6 items-center justify-center rounded-full ${
                 i <= currentIndex
@@ -172,8 +178,8 @@ export default function SignFlow({
             >
               {i + 1}
             </span>
-            <span className={step === s.key ? "text-slate-700" : ""}>
-              {s.label}
+            <span className={step === stepItem.key ? "text-slate-700" : ""}>
+              {stepItem.label}
             </span>
             {i < steps.length - 1 && (
               <span className="mx-1 h-px w-6 bg-slate-300" />
@@ -186,6 +192,7 @@ export default function SignFlow({
         {step === "bienvenue" && (
           <div className="flex flex-col gap-6">
             <WelcomeLetter
+              lang={contract.lang}
               entrepriseNom={welcome.entrepriseNom}
               introVideoUrl={welcome.introVideoUrl}
               blocks={welcome.blocks}
@@ -196,7 +203,7 @@ export default function SignFlow({
               onClick={() => setStep("lecture")}
               className="w-full rounded-xl bg-brand-500 px-4 py-3 text-sm font-semibold text-white shadow-soft transition hover:bg-brand-600"
             >
-              Continuer vers le contrat
+              {s.welcome.continueButton}
             </button>
           </div>
         )}
@@ -210,10 +217,11 @@ export default function SignFlow({
               delaisPaiement={contract.delaisPaiement}
               billingType={contract.billingType}
               dureeMois={contract.dureeMois}
+              lang={contract.lang}
             />
 
             <p className="mt-4 text-xs font-medium uppercase tracking-wide text-slate-400">
-              Contrat de prestation de services
+              {s.lecture.contractHeading}
             </p>
             <div className="mt-2 rounded-xl border border-slate-100 bg-slate-50 p-4 text-sm leading-relaxed text-slate-700 whitespace-pre-line">
               {contractText}
@@ -221,8 +229,7 @@ export default function SignFlow({
 
             <div className="mt-5 space-y-4 border-t border-slate-100 pt-5">
               <p className="text-sm font-medium text-slate-700">
-                Merci de parapher les éléments suivants pour confirmer votre
-                lecture :
+                {s.lecture.initialsPrompt}
               </p>
               {INITIAL_CHECKPOINTS.map((c) => (
                 <div
@@ -235,7 +242,7 @@ export default function SignFlow({
                   <div className="flex items-center gap-2">
                     <SignatureCanvas
                       compact
-                      ariaLabel={`Initiales — ${c.label}`}
+                      ariaLabel={c.label}
                       ref={(handle) => {
                         initialsRefs.current[c.key] = handle;
                       }}
@@ -254,7 +261,7 @@ export default function SignFlow({
                       }}
                       className="text-xs font-medium text-brand-600 hover:underline"
                     >
-                      Effacer
+                      {s.lecture.erase}
                     </button>
                   </div>
                 </div>
@@ -278,12 +285,11 @@ export default function SignFlow({
                 }}
                 className="mt-0.5 h-4 w-4 rounded border-slate-300 text-brand-600 focus:ring-brand-500 disabled:opacity-40"
               />
-              J&apos;ai lu et je comprends l&apos;ensemble des termes du contrat
-              ci-dessus, et j&apos;accepte d&apos;y être lié(e).
+              {s.lecture.acceptLabel}
             </label>
             {!allInitialsFilled && (
               <p className="mt-1 text-xs text-slate-400">
-                Les trois paraphes ci-dessus sont requis avant l&apos;acceptation.
+                {s.lecture.initialsRequired}
               </p>
             )}
           </>
@@ -294,25 +300,25 @@ export default function SignFlow({
             <div className="grid gap-4 sm:grid-cols-2">
               <div>
                 <label className="block text-sm font-medium text-slate-700">
-                  Nom complet *
+                  {s.signature.fullName}
                 </label>
                 <input
                   type="text"
                   value={signerName}
                   onChange={(e) => setSignerName(e.target.value)}
-                  placeholder="Prénom Nom"
+                  placeholder={s.signature.fullNamePlaceholder}
                   className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500"
                 />
               </div>
               <div>
                 <label className="block text-sm font-medium text-slate-700">
-                  Courriel (optionnel)
+                  {s.signature.email}
                 </label>
                 <input
                   type="email"
                   value={signerEmail}
                   onChange={(e) => setSignerEmail(e.target.value)}
-                  placeholder="nom@exemple.com"
+                  placeholder={s.signature.emailPlaceholder}
                   className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500"
                 />
               </div>
@@ -321,7 +327,7 @@ export default function SignFlow({
             <div>
               <div className="mb-1 flex items-center justify-between">
                 <label className="block text-sm font-medium text-slate-700">
-                  Signez ici (souris ou doigt) *
+                  {s.signature.signHere}
                 </label>
                 <button
                   type="button"
@@ -331,7 +337,7 @@ export default function SignFlow({
                   }}
                   className="text-xs font-medium text-brand-600 hover:underline"
                 >
-                  Effacer
+                  {s.signature.erase}
                 </button>
               </div>
               <SignatureCanvas
@@ -339,9 +345,7 @@ export default function SignFlow({
                 onChange={(empty) => setSignatureEmpty(empty)}
               />
               {signatureEmpty && (
-                <p className="mt-1 text-xs text-slate-400">
-                  Dessine ta signature dans la zone ci-dessus.
-                </p>
+                <p className="mt-1 text-xs text-slate-400">{s.signature.emptyHint}</p>
               )}
             </div>
 
@@ -357,13 +361,10 @@ export default function SignFlow({
               onClick={handleSubmit}
               className="w-full rounded-xl bg-brand-500 px-4 py-3 text-sm font-semibold text-white shadow-soft transition hover:bg-brand-600 disabled:cursor-not-allowed disabled:opacity-60"
             >
-              {loading ? "Signature en cours…" : "Signer et télécharger le PDF"}
+              {loading ? s.signature.submitLoading : s.signature.submitIdle}
             </button>
 
-            <p className="text-center text-xs text-slate-400">
-              La date, l&apos;heure et l&apos;adresse IP seront enregistrées dans un
-              certificat de traçabilité joint au PDF.
-            </p>
+            <p className="text-center text-xs text-slate-400">{s.signature.ipNotice}</p>
           </div>
         )}
 
@@ -372,28 +373,22 @@ export default function SignFlow({
             <div className="flex h-12 w-12 items-center justify-center rounded-full bg-emerald-100 text-emerald-600">
               ✓
             </div>
-            <h2 className="font-title text-xl font-semibold">Contrat signé avec succès</h2>
-            <p className="max-w-sm text-sm text-slate-500">
-              Le PDF signé, incluant le certificat de traçabilité, a été téléchargé
-              automatiquement.
-            </p>
+            <h2 className="font-title text-xl font-semibold">{s.success.title}</h2>
+            <p className="max-w-sm text-sm text-slate-500">{s.success.body}</p>
             {downloadUrl && (
               <a
                 href={downloadUrl}
                 download="contrat-signe.pdf"
                 className="mt-2 rounded-xl bg-brand-500 px-4 py-2 text-sm font-semibold text-white hover:bg-brand-600"
               >
-                Retélécharger le PDF
+                {s.success.redownload}
               </a>
             )}
           </div>
         )}
       </section>
 
-      <footer className="text-center text-xs text-slate-400">
-        Signature électronique conforme à la Loi concernant le cadre juridique des
-        technologies de l&apos;information (RLRQ, c. C-1.1).
-      </footer>
+      <footer className="text-center text-xs text-slate-400">{s.footer}</footer>
     </main>
   );
 }

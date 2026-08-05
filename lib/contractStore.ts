@@ -1,5 +1,5 @@
 import { getStore } from "@netlify/blobs";
-import type { BillingType, ContractLine } from "@/lib/contractContent";
+import type { BillingType, ContractLang, ContractLine } from "@/lib/contractContent";
 
 export type ContractStatus = "pending" | "signed";
 
@@ -11,6 +11,7 @@ export type InitialEntry = {
 
 export type ContractRecord = {
   id: string;
+  lang: ContractLang;
   clientNom: string;
   clientEmail?: string;
   clientEntreprise?: string;
@@ -34,6 +35,7 @@ export type ContractRecord = {
 export type ContractSummary = Pick<
   ContractRecord,
   | "id"
+  | "lang"
   | "clientNom"
   | "clientEmail"
   | "clientEntreprise"
@@ -66,6 +68,7 @@ async function writeIndex(entries: ContractSummary[]) {
 function toSummary(record: ContractRecord): ContractSummary {
   return {
     id: record.id,
+    lang: record.lang,
     clientNom: record.clientNom,
     clientEmail: record.clientEmail,
     clientEntreprise: record.clientEntreprise,

@@ -48,6 +48,44 @@ Voilà ce qu'on cherche. Voilà ce qu'on offre.
 
 Si ça résonne avec vous, on a une vraie conversation à avoir.`;
 
+// Version anglaise par défaut — modifiable séparément dans /parametres. Sert
+// uniquement pour les contrats créés avec la langue "English".
+export const DEFAULT_WELCOME_MESSAGE_EN = `Thank you for being here.
+
+Think of Services Valu not as a vendor to squeeze for the cheapest option, but as a strategic partner — part of your team, your thinking, your trajectory.
+
+Because the truth is, what drives us isn't selling services. It's creating value together.
+
+## What we're looking for
+
+We're looking for clients who understand one essential thing:
+
+Real problems aren't solved with simple solutions. They demand rigor, strategy, and the willingness to find the best path — not the fastest or cheapest one, but the one that maximizes your results and creates real value.
+
+We do our best work with people who are attentive, understanding, human, and rigorous. Who ask for excellence. And who know we can deliver it together.
+
+## The keys to a good relationship with us
+
+- Look beyond the cost — Our value isn't measured in discounted hourly banks. It's measured in real results, in strategy that holds up, in the multidisciplinary expertise we share. If you're looking to negotiate down, you're better off elsewhere. If you're looking to invest in real results, let's talk.
+- Hold us to a high standard — Ask us the right questions. Ask us to justify our recommendations. Demand excellence. That's where we grow together, where we build things that actually work.
+- Trust us — Not blindly. But with enough perspective to let the strategy play out. Real strategies take time to show their value. The clients we respect most are the ones who give us that space.
+- Communicate, for real — No politics. No silence that drags on. We want to talk about what's working, what isn't, and what pivots are needed. We want you involved, active, and part of your own success.
+- Navigate change with us — Marketing changes. Tools change. Algorithms change. The clients we prefer are the ones willing to imagine change with us, to adapt, to explore. Not "that's how we've always done it."
+
+## What you can expect from us
+
+You get our multidisciplinary expertise: social media, paid advertising, SEO/GEO, branding, web, content. No dilution. No "we'll see." A real, integrated strategy.
+
+You get our responsiveness and creativity. The small and medium businesses that work with us find a team that moves fast, tests, adapts, and creates things you won't see anywhere else.
+
+You get our honesty. We tell you when we don't know. We tell you when something isn't working. We tell you what could really change your business. And we say it in plain words, not jargon.
+
+You get our commitment. When we partner with someone, it's not transactional. It's a real partnership. We work hard for your results. Every report. Every month. Every year.
+
+That's what we're looking for. That's what we offer.
+
+If this resonates with you, we have a real conversation to have.`;
+
 // Convertit le texte modifiable (voir convention ci-dessus) en blocs typés
 // utilisés pour l'affichage et le PDF.
 export function parseWelcomeMessage(text: string): LetterBlock[] {

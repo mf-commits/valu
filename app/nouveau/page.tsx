@@ -11,6 +11,7 @@ import {
   computeLineSubtotal,
   formatCurrency,
   type BillingType,
+  type ContractLang,
   type ContractLine,
 } from "@/lib/contractContent";
 
@@ -22,6 +23,7 @@ export default function NouveauContrat() {
   const [delaisPaiement, setDelaisPaiement] = useState("");
   const [billingType, setBillingType] = useState<BillingType>("unique");
   const [dureeMois, setDureeMois] = useState("");
+  const [lang, setLang] = useState<ContractLang>("fr");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [createdId, setCreatedId] = useState<string | null>(null);
@@ -103,6 +105,7 @@ export default function NouveauContrat() {
           delaisPaiement,
           billingType,
           dureeMois: dureeMois ? Number(dureeMois) : undefined,
+          lang,
         }),
       });
       const data = await res.json();
@@ -160,6 +163,7 @@ export default function NouveauContrat() {
               setDelaisPaiement("");
               setBillingType("unique");
               setDureeMois("");
+              setLang("fr");
             }}
           >
             Créer un autre contrat
@@ -194,6 +198,40 @@ export default function NouveauContrat() {
         onSubmit={handleSubmit}
         className="flex flex-col gap-5 rounded-2xl border border-slate-200 bg-white/80 p-6 shadow-soft backdrop-blur"
       >
+        <div>
+          <label className="block text-sm font-medium text-slate-700">
+            Langue du contrat
+          </label>
+          <div className="mt-1 flex gap-2">
+            <button
+              type="button"
+              onClick={() => setLang("fr")}
+              className={`flex-1 rounded-lg border px-3 py-2 text-xs font-medium ${
+                lang === "fr"
+                  ? "border-brand-400 bg-brand-50 text-brand-700"
+                  : "border-slate-200 text-slate-600 hover:bg-slate-50"
+              }`}
+            >
+              Français
+            </button>
+            <button
+              type="button"
+              onClick={() => setLang("en")}
+              className={`flex-1 rounded-lg border px-3 py-2 text-xs font-medium ${
+                lang === "en"
+                  ? "border-brand-400 bg-brand-50 text-brand-700"
+                  : "border-slate-200 text-slate-600 hover:bg-slate-50"
+              }`}
+            >
+              English
+            </button>
+          </div>
+          <p className="mt-1 text-xs text-slate-400">
+            Détermine la langue du contrat, de la lettre de bienvenue et de
+            toute la page vue par le client.
+          </p>
+        </div>
+
         <div>
           <label className="block text-sm font-medium text-slate-700">
             Nom du client *

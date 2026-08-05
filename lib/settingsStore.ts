@@ -1,6 +1,9 @@
 import { getStore } from "@netlify/blobs";
 import { companyConfig } from "@/lib/companyConfig";
-import { DEFAULT_WELCOME_MESSAGE } from "@/lib/welcomeLetter";
+import {
+  DEFAULT_WELCOME_MESSAGE,
+  DEFAULT_WELCOME_MESSAGE_EN,
+} from "@/lib/welcomeLetter";
 
 // Paramètres modifiables depuis /parametres, sans toucher au code. Stockés
 // dans Netlify Blobs ; si rien n'a encore été enregistré, on retombe sur les
@@ -11,6 +14,7 @@ export type SiteSettings = {
   entrepriseAdresse: string;
   introVideoUrl: string;
   welcomeMessage: string;
+  welcomeMessageEn: string;
 };
 
 function store() {
@@ -23,6 +27,7 @@ export function defaultSettings(): SiteSettings {
     entrepriseAdresse: companyConfig.entrepriseAdresse,
     introVideoUrl: companyConfig.introVideoUrl,
     welcomeMessage: DEFAULT_WELCOME_MESSAGE,
+    welcomeMessageEn: DEFAULT_WELCOME_MESSAGE_EN,
   };
 }
 

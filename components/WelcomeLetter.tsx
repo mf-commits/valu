@@ -1,8 +1,11 @@
 import type { LetterBlock } from "@/lib/welcomeLetter";
+import type { ContractLang } from "@/lib/contractContent";
 import { getVideoEmbed } from "@/lib/videoEmbed";
+import { t } from "@/lib/uiStrings";
 import Logo from "@/components/Logo";
 
 type Props = {
+  lang?: ContractLang;
   entrepriseNom: string;
   introVideoUrl: string;
   blocks: LetterBlock[];
@@ -10,22 +13,24 @@ type Props = {
 };
 
 export default function WelcomeLetter({
+  lang,
   entrepriseNom,
   introVideoUrl,
   blocks,
   signoff,
 }: Props) {
   const video = getVideoEmbed(introVideoUrl);
+  const s = t(lang).welcome;
 
   return (
     <div className="space-y-4 text-sm leading-relaxed text-slate-700">
       <div className="text-center">
         <Logo className="mx-auto mb-4 h-7" />
         <p className="text-sm font-medium uppercase tracking-wide text-brand-600">
-          Bienvenue chez {entrepriseNom}
+          {s.bienvenueChez} {entrepriseNom}
         </p>
         <h2 className="font-title mt-1 text-2xl font-semibold tracking-tight text-slate-900">
-          Bonjour et bienvenue
+          {s.bonjour}
         </h2>
       </div>
 
@@ -35,7 +40,7 @@ export default function WelcomeLetter({
             <div className="relative aspect-video w-full">
               <iframe
                 src={video.src}
-                title="Message de bienvenue"
+                title={s.videoTitle}
                 className="absolute inset-0 h-full w-full"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowFullScreen
@@ -54,7 +59,7 @@ export default function WelcomeLetter({
               rel="noopener noreferrer"
               className="flex items-center justify-center gap-2 bg-brand-50 px-4 py-3 text-sm font-semibold text-brand-700 hover:bg-brand-100"
             >
-              ▶ Regarder notre message de bienvenue
+              {s.videoLinkFallback}
             </a>
           )}
         </div>

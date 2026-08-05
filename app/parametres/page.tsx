@@ -8,6 +8,7 @@ type Settings = {
   entrepriseAdresse: string;
   introVideoUrl: string;
   welcomeMessage: string;
+  welcomeMessageEn: string;
 };
 
 export default function ParametresPage() {
@@ -134,14 +135,14 @@ export default function ParametresPage() {
 
         <div>
           <label className="block text-sm font-medium text-slate-700">
-            Mot de bienvenue
+            Mot de bienvenue — Français
           </label>
           <textarea
             value={settings.welcomeMessage}
             onChange={(e) =>
               setSettings({ ...settings, welcomeMessage: e.target.value })
             }
-            rows={16}
+            rows={12}
             className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 font-mono text-xs leading-relaxed focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500"
           />
           <p className="mt-1 text-xs text-slate-400">
@@ -150,6 +151,24 @@ export default function ParametresPage() {
             un sous-titre. Des lignes qui commencent par{" "}
             <code className="rounded bg-slate-100 px-1">- </code> deviennent
             une liste à puces.
+          </p>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-slate-700">
+            Welcome message — English
+          </label>
+          <textarea
+            value={settings.welcomeMessageEn}
+            onChange={(e) =>
+              setSettings({ ...settings, welcomeMessageEn: e.target.value })
+            }
+            rows={12}
+            className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 font-mono text-xs leading-relaxed focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500"
+          />
+          <p className="mt-1 text-xs text-slate-400">
+            Utilisé seulement pour les contrats créés en anglais. Même
+            convention d&apos;écriture que ci-dessus.
           </p>
         </div>
 

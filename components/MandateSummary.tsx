@@ -3,8 +3,10 @@ import {
   computeLineSubtotal,
   formatCurrency,
   type BillingType,
+  type ContractLang,
   type ContractLine,
 } from "@/lib/contractContent";
+import { t } from "@/lib/uiStrings";
 
 type Props = {
   clientNom: string;
@@ -13,6 +15,7 @@ type Props = {
   delaisPaiement: string;
   billingType?: BillingType;
   dureeMois?: number;
+  lang?: ContractLang;
 };
 
 export default function MandateSummary({
@@ -22,15 +25,16 @@ export default function MandateSummary({
   delaisPaiement,
   billingType = "unique",
   dureeMois,
+  lang,
 }: Props) {
   const total = computeContractTotal(lines);
-  const montantLabel =
-    billingType === "mensuel" ? "Montant mensuel estimé" : "Montant total estimé";
+  const s = t(lang).mandate;
+  const montantLabel = billingType === "mensuel" ? s.totalMonthly : s.totalOnce;
 
   return (
     <div className="rounded-xl border border-brand-100 bg-brand-50 p-4">
       <p className="text-xs font-semibold uppercase tracking-wide text-brand-700">
-        Description du mandat
+        {s.heading}
       </p>
       <p className="mt-1 text-sm font-medium text-slate-800">
         {clientEntreprise ? `${clientEntreprise} — ${clientNom}` : clientNom}
@@ -65,7 +69,7 @@ export default function MandateSummary({
           })}
         </ul>
       ) : (
-        <p className="mt-3 text-sm text-slate-500">Aucun service précisé.</p>
+        <p className="mt-3 text-sm text-slate-500">{s.noServices}</p>
       )}
 
       <div className="mt-4 flex flex-col gap-1 border-t border-brand-100 pt-3 text-sm">
@@ -73,17 +77,19 @@ export default function MandateSummary({
           <span className="text-slate-500">{montantLabel}</span>
           <span className="font-medium text-slate-800">
             {formatCurrency(total)} $ CA
-            {billingType === "mensuel" ? " / mois" : ""}
+            {billingType === "mensuel" ? ` ${s.perMonth}` : ""}
           </span>
         </div>
         {billingType === "mensuel" && dureeMois && (
           <div className="flex justify-between">
-            <span className="text-slate-500">Durée</span>
-            <span className="font-medium text-slate-800">{dureeMois} mois</span>
+            <span className="text-slate-500">{s.duration}</span>
+            <span className="font-medium text-slate-800">
+              {dureeMois} {s.months}
+            </span>
           </div>
         )}
         <div className="flex justify-between">
-          <span className="text-slate-500">Modalités</span>
+          <span className="text-slate-500">{s.terms}</span>
           <span className="max-w-[65%] text-right font-medium text-slate-800">
             {delaisPaiement}
           </span>

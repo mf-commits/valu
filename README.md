@@ -90,6 +90,15 @@ montant *mensuel* (pas de total annuel affiché ou mentionné dans le
 contrat), avec une durée d'engagement optionnelle (en mois). Le texte légal
 du contrat (article 3) s'ajuste automatiquement selon le mode choisi.
 
+## Langue du contrat (Français / English)
+
+Sur `/nouveau`, tu choisis « Français » ou « English » pour chaque contrat.
+Ce choix détermine la langue du texte légal du contrat, de la lettre de
+bienvenue et de toute la page vue par le client (jusqu'au PDF signé). Le
+mot de bienvenue anglais se modifie séparément du français dans
+`/parametres`. Rien à faire pour les contrats déjà créés — ils restent en
+français.
+
 ## Autorisation par initiales
 
 Avant de pouvoir cocher la case d'acceptation, le client doit parapher trois

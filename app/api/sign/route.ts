@@ -74,6 +74,7 @@ export async function POST(request: NextRequest) {
     // enregistrées — jamais depuis ce que le navigateur envoie — pour éviter
     // qu'un client altère le texte signé.
     const contractText = getContractText({
+      lang: record.lang,
       clientNom: record.clientNom,
       clientEntreprise: record.clientEntreprise,
       lines: record.lines,
@@ -98,12 +99,15 @@ export async function POST(request: NextRequest) {
       `${contractText}|${signerName}|${timestamp}|${signatureDataUrl}`
     );
 
+    const welcomeMessage =
+      record.lang === "en" ? settings.welcomeMessageEn : settings.welcomeMessage;
     const introText = getWelcomeLetterText(
-      parseWelcomeMessage(settings.welcomeMessage),
+      parseWelcomeMessage(welcomeMessage),
       getWelcomeLetterSignoff(settings.entrepriseNom)
     );
 
     const pdfBytes = await generateContractPdf({
+      lang: record.lang,
       introText,
       contractText,
       signerName: signerName.trim(),

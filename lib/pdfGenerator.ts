@@ -1,7 +1,10 @@
 import { PDFDocument, PDFFont, PDFPage, StandardFonts, rgb } from "pdf-lib";
 import type { InitialEntry } from "@/lib/contractStore";
+import type { ContractLang } from "@/lib/contractContent";
+import { t } from "@/lib/uiStrings";
 
 export type GeneratePdfParams = {
+  lang?: ContractLang;
   introText?: string;
   contractText: string;
   signerName: string;
@@ -54,6 +57,7 @@ export async function generateContractPdf(
   params: GeneratePdfParams
 ): Promise<Uint8Array> {
   const {
+    lang,
     introText,
     contractText,
     signerName,
@@ -66,6 +70,7 @@ export async function generateContractPdf(
     hash,
     initials,
   } = params;
+  const s = t(lang).pdf;
 
   const pdfDoc = await PDFDocument.create();
   const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
@@ -99,7 +104,7 @@ export async function generateContractPdf(
 
   // Page de garde — lettre de bienvenue
   if (introText) {
-    page.drawText("Mot de bienvenue", {
+    page.drawText(s.welcomeHeading, {
       x: MARGIN,
       y,
       size: 16,
@@ -113,7 +118,7 @@ export async function generateContractPdf(
   }
 
   // Titre du contrat
-  page.drawText("Contrat de services — copie signée", {
+  page.drawText(s.contractHeading, {
     x: MARGIN,
     y,
     size: 16,
@@ -128,7 +133,7 @@ export async function generateContractPdf(
   // Section signature
   addPageIfNeeded(180);
   y -= 20;
-  page.drawText("Signature", { x: MARGIN, y, size: 13, font: fontBold });
+  page.drawText(s.signatureHeading, { x: MARGIN, y, size: 13, font: fontBold });
   y -= 20;
 
   if (signatureDataUrl?.includes(",")) {
@@ -146,16 +151,16 @@ export async function generateContractPdf(
     y -= imgDims.height + 10;
   }
 
-  page.drawText(`Signé par : ${signerName}`, { x: MARGIN, y, size: FONT_SIZE, font });
+  page.drawText(`${s.signedBy}: ${signerName}`, { x: MARGIN, y, size: FONT_SIZE, font });
   y -= LINE_HEIGHT;
-  page.drawText(`Date et heure : ${timestamp}`, { x: MARGIN, y, size: FONT_SIZE, font });
+  page.drawText(`${s.dateTime}: ${timestamp}`, { x: MARGIN, y, size: FONT_SIZE, font });
   y -= LINE_HEIGHT;
 
   // Initiales de confirmation (autorisation par article)
   if (initials && initials.length > 0) {
     addPageIfNeeded(140);
     y -= 20;
-    page.drawText("Initiales de confirmation", {
+    page.drawText(s.initialsHeading, {
       x: MARGIN,
       y,
       size: 13,
@@ -186,7 +191,7 @@ export async function generateContractPdf(
           });
           y -= Math.max(imgDims.height, LINE_HEIGHT) + 6;
         } catch {
-          page.drawText(`${initial.label} : paraphe enregistré`, {
+          page.drawText(`${initial.label}: ${s.initialRecorded}`, {
             x: MARGIN,
             y,
             size: 9,
@@ -202,7 +207,7 @@ export async function generateContractPdf(
   // Certificat de traçabilité
   addPageIfNeeded(150);
   y -= 20;
-  page.drawText("Certificat de traçabilité", {
+  page.drawText(s.certHeading, {
     x: MARGIN,
     y,
     size: 13,
@@ -211,13 +216,13 @@ export async function generateContractPdf(
   y -= 20;
 
   const certLines = [
-    `Identifiant du contrat : ${contractId}`,
-    `Nom du signataire : ${signerName}`,
-    `Courriel : ${signerEmail || "non fourni"}`,
-    `Date et heure de signature : ${timestamp}`,
-    `Adresse IP : ${ip}`,
-    `Agent utilisateur : ${userAgent}`,
-    `Empreinte d'intégrité (SHA-256) : ${hash}`,
+    `${s.certId}: ${contractId}`,
+    `${s.certSigner}: ${signerName}`,
+    `${s.certEmail}: ${signerEmail || s.certEmailMissing}`,
+    `${s.certDate}: ${timestamp}`,
+    `${s.certIp}: ${ip}`,
+    `${s.certAgent}: ${userAgent}`,
+    `${s.certHash}: ${hash}`,
   ];
   certLines.forEach((line) => {
     addPageIfNeeded(LINE_HEIGHT);
