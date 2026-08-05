@@ -28,6 +28,10 @@ export type SignFlowContract = {
   billingType: BillingType;
   dureeMois?: number;
   delaisPaiement: string;
+  entrepriseNom?: string;
+  entrepriseAdresse?: string;
+  villeJuridiction?: string;
+  preavisJours?: string;
 };
 
 export type SignFlowWelcome = {
@@ -63,6 +67,10 @@ export default function SignFlow({
         billingType: contract.billingType,
         dureeMois: contract.dureeMois,
         delaisPaiement: contract.delaisPaiement,
+        entrepriseNom: contract.entrepriseNom,
+        entrepriseAdresse: contract.entrepriseAdresse,
+        villeJuridiction: contract.villeJuridiction,
+        preavisJours: contract.preavisJours,
       }),
     [contract]
   );

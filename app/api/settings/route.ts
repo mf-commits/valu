@@ -15,12 +15,14 @@ export async function POST(request: NextRequest) {
       entrepriseNom,
       entrepriseAdresse,
       introVideoUrl,
+      introVideoUrlEn,
       welcomeMessage,
       welcomeMessageEn,
     } = body as {
       entrepriseNom?: string;
       entrepriseAdresse?: string;
       introVideoUrl?: string;
+      introVideoUrlEn?: string;
       welcomeMessage?: string;
       welcomeMessageEn?: string;
     };
@@ -29,6 +31,7 @@ export async function POST(request: NextRequest) {
       entrepriseNom: entrepriseNom?.trim(),
       entrepriseAdresse: entrepriseAdresse?.trim(),
       introVideoUrl: introVideoUrl?.trim(),
+      introVideoUrlEn: introVideoUrlEn?.trim(),
       welcomeMessage,
       welcomeMessageEn,
     });

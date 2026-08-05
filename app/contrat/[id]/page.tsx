@@ -1,6 +1,7 @@
 import { getContract } from "@/lib/contractStore";
 import { getSettings } from "@/lib/settingsStore";
 import { parseWelcomeMessage, getWelcomeLetterSignoff } from "@/lib/welcomeLetter";
+import { companyConfig } from "@/lib/companyConfig";
 import { t } from "@/lib/uiStrings";
 import SignFlow from "@/components/SignFlow";
 
@@ -68,10 +69,17 @@ export default async function ContratPage({
         billingType: contract.billingType,
         dureeMois: contract.dureeMois,
         delaisPaiement: contract.delaisPaiement,
+        entrepriseNom: settings.entrepriseNom,
+        entrepriseAdresse: settings.entrepriseAdresse,
+        villeJuridiction: companyConfig.villeJuridiction,
+        preavisJours: companyConfig.preavisJours,
       }}
       welcome={{
         entrepriseNom: settings.entrepriseNom,
-        introVideoUrl: settings.introVideoUrl,
+        introVideoUrl:
+          contract.lang === "en"
+            ? settings.introVideoUrlEn
+            : settings.introVideoUrl,
         blocks: parseWelcomeMessage(welcomeMessage),
         signoff: getWelcomeLetterSignoff(settings.entrepriseNom),
       }}

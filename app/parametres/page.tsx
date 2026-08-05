@@ -7,6 +7,7 @@ type Settings = {
   entrepriseNom: string;
   entrepriseAdresse: string;
   introVideoUrl: string;
+  introVideoUrlEn: string;
   welcomeMessage: string;
   welcomeMessageEn: string;
 };
@@ -115,7 +116,7 @@ export default function ParametresPage() {
 
         <div>
           <label className="block text-sm font-medium text-slate-700">
-            Lien de la vidéo d&apos;introduction (optionnel)
+            Lien de la vidéo d&apos;introduction — Français (optionnel)
           </label>
           <input
             type="url"
@@ -127,9 +128,29 @@ export default function ParametresPage() {
             className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500"
           />
           <p className="mt-1 text-xs text-slate-400">
-            YouTube, Vimeo et Loom s&apos;affichent avec un aperçu cliquable
-            directement sur l&apos;écran de bienvenue du client. Laisse vide
-            pour ne rien afficher.
+            Montrée sur l&apos;écran de bienvenue des contrats créés en
+            français.
+          </p>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-slate-700">
+            Intro video link — English (optional)
+          </label>
+          <input
+            type="url"
+            value={settings.introVideoUrlEn}
+            onChange={(e) =>
+              setSettings({ ...settings, introVideoUrlEn: e.target.value })
+            }
+            placeholder="https://www.youtube.com/watch?v=... , loom.com/share/..., vimeo.com/..."
+            className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500"
+          />
+          <p className="mt-1 text-xs text-slate-400">
+            Shown on the welcome screen of contracts created in English.
+            YouTube, Vimeo and Loom links show a clickable preview directly on
+            the page. Leave either field empty to show nothing for that
+            language.
           </p>
         </div>
 

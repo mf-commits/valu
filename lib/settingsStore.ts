@@ -13,6 +13,7 @@ export type SiteSettings = {
   entrepriseNom: string;
   entrepriseAdresse: string;
   introVideoUrl: string;
+  introVideoUrlEn: string;
   welcomeMessage: string;
   welcomeMessageEn: string;
 };
@@ -26,6 +27,7 @@ export function defaultSettings(): SiteSettings {
     entrepriseNom: companyConfig.entrepriseNom,
     entrepriseAdresse: companyConfig.entrepriseAdresse,
     introVideoUrl: companyConfig.introVideoUrl,
+    introVideoUrlEn: "",
     welcomeMessage: DEFAULT_WELCOME_MESSAGE,
     welcomeMessageEn: DEFAULT_WELCOME_MESSAGE_EN,
   };
